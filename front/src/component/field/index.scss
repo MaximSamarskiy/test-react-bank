@@ -1,0 +1,40 @@
+@use "../../style";
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &_label {
+    font-size: 14px;
+  }
+
+  &_input {
+    border: 1px solid (rgb(231, 226, 226));
+    background-color: white;
+
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 14px;
+
+    &::placeholder {
+      color: white;
+    }
+
+    color: black;
+
+    transition: border-color 0.3s;
+
+    &:hover {
+      border-color: #775ce5;
+    }
+
+    &:focus {
+      border-color: grey;
+    }
+
+    &-error {
+      border-color: red !important;
+    }
+  }
+}

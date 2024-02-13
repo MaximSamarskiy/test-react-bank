@@ -1,0 +1,73 @@
+@use "./index.scss";
+@use "./click.scss" as s;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &_item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &_error {
+    color: red;
+    font-size: 12px;
+    display: none;
+
+    &--active {
+      display: block;
+    }
+  }
+}
+
+.button {
+  color: white;
+  background-color: #775ce5;
+  padding: 18px 16px;
+  border-radius: 10px;
+  margin-right: 20px;
+  margin-left: 20px;
+
+  @include s.click;
+
+  &:active {
+    opacity: 0.3;
+  }
+
+  &-disabled {
+    opacity: 0.5;
+    cursor: default;
+
+    &:hover,
+    &:active {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+}
+
+.alert {
+  display: flex;
+  justify-content: center;
+
+  gap: 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 16px 12px;
+  font-size: 14px;
+
+  margin-right: 20px;
+  margin-left: 20px;
+
+  &-danger {
+    background-color: rgb(243, 224, 162);
+    color: orange;
+  }
+
+  &-disabled {
+    display: none;
+  }
+}

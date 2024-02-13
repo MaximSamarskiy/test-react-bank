@@ -1,0 +1,34 @@
+@use "../../style" as s;
+
+@use "../field/index.scss" as field;
+
+.field-password {
+  .field_wrapper {
+    width: 100%;
+    display: grid;
+    position: relative;
+
+    & .field_icon {
+      @include s.click;
+
+      display: block;
+      height: 18px;
+      width: 18px;
+
+      background-image: url("../../image/svg/eye-black-close.svg");
+      background-size: cover;
+
+      &.show {
+        background-image: url("../../image/svg/eye-black-open.svg");
+      }
+
+      position: absolute;
+      right: 18px;
+      top: calc(50% - 10px);
+    }
+  }
+
+  .field_input {
+    padding-right: calc(16px + 20px + 16px);
+  }
+}

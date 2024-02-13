@@ -1,0 +1,5 @@
+@use "../../style" as s;
+
+.arrow--back {
+  @include s.click;
+}
