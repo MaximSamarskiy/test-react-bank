@@ -1,49 +1,56 @@
 const express = require('express')
 const router = express.Router()
-const { User } = require('../class/user')
+const bcrypt = require('bcryptjs')
+const User = require('../class/user')
+const {
+  check,
+  validationResult,
+} = require('express-validator')
 
-User.create({
-  email: 'test@mail.com',
-  password: 123,
-})
+router.post(
+  '/signup',
+  [
+    check('email', 'Uncorrect email').isEmail(),
+    check(
+      'password',
+      'Password must be longer than 3 and shorter than 12',
+    ).isLength({ min: 3, max: 12 }),
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req)
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          message: 'Uncorrect request',
+          errors: errors.array(),
+        })
+      }
 
-router.get('/signup', function (req, res) {
-  return res.render('signup', {
-    name: 'signup',
-    component: ['field', 'field-password'],
-    title: 'Signup page',
-  })
-})
+      const { email, password } = req.body
 
-router.post('/signup', function (req, res) {
-  const { email, password } = req.body
+      const candidate = await User.findOne({ email })
 
-  console.log('Received Request Body:', req.body)
+      if (!candidate) {
+        const hashPassword = await bcrypt.hash(password, 15)
 
-  if (!email || !password) {
-    return res.status(400).json({
-      message: 'Ошибка, такой пользователь уже существует',
-    })
-  }
-
-  if (!email || !password) {
-    return res.status(400).json({
-      message: 'Ошибка, некорректные данные пользователя',
-    })
-  }
-
-  try {
-    User.create({ email, password })
-
-    return res.status(200).json({
-      message: 'Зарегистрировался',
-    })
-  } catch (err) {
-    console.error('Error during user creation:', err)
-    return res.status(400).json({
-      message: 'Ошибка создания пользователя',
-    })
-  }
-})
+        const user = new User({
+          email,
+          password: hashPassword,
+        })
+        await user.save()
+        return res.json({ message: 'User was created' })
+      } else {
+        return res.status(400).json({
+          message: `User with email ${email} already exists`,
+        })
+      }
+    } catch (error) {
+      console.error(error)
+      return res
+        .status(500)
+        .json({ message: 'Server error' })
+    }
+  },
+)
 
 module.exports = router

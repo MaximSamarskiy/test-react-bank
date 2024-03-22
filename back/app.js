@@ -4,43 +4,31 @@ const path = require('path')
 const cookieParser = require('cookie-parser')
 const logger = require('morgan')
 const dotenv = require('dotenv')
+const cors = require('cors')
 
-// const webpack = require('webpack')
-// const webpackDevMiddleware = require('webpack-dev-middleware')
-// const webpackHotMiddleware = require('webpack-hot-middleware')
-// const config = require('./webpack.config.js')
-
-// const hbs = require('express-handlebars')
-
-// const compiler = webpack(config)
 const app = express()
 
+const auth = require('./src/route/auth')
+
+app.use(cors())
+
+const mongoose = require('mongoose')
+
+const debug = require('debug')(
+  'template-express-live-reload:server',
+)
+
+const http = require('http')
+
+app.use(express.json())
+
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+  }),
+)
+
 dotenv.config()
-
-// app.use(
-//   webpackDevMiddleware(compiler, {
-//     publicPath: config.output.publicPath,
-//   }),
-// )
-
-// app.use(webpackHotMiddleware(compiler))
-
-// app.set('view engine', 'hbs')
-// app.set('views', 'src/container')
-// app.engine(
-//   'hbs',
-//   hbs.engine({
-//     extname: 'hbs',
-//     defaultLayout: 'default/index',
-//     layoutsDir: __dirname + '/src/layout/',
-//     partialsDir: {
-//       dir: __dirname + '/src/component/',
-//       rename: (filePath) => {
-//         return `${filePath.split('/')[0]}`
-//       },
-//     },
-//   }),
-// )
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
@@ -56,7 +44,6 @@ app.use((req, res, next) => {
 })
 
 app.use(logger('dev'))
-app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
@@ -78,6 +65,8 @@ if (process.env.NODE_ENV === 'development') {
 const route = require('./src/route/index.js')
 
 app.use('/', route)
+app.use('/', auth)
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404))

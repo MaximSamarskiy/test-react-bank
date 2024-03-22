@@ -1,26 +1,11 @@
-class User {
-  static #list = []
+const { Schema, ObjectId } = require('mongoose')
 
-  constructor({ email, password }) {
-    this.email = email
-    this.password = password
-  }
+const User = new Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
 
-  static create(data) {
-    const user = new User(data)
-
-    this.#list.push(user)
-
-    console.log(this.#list)
-  }
-
-  static getByEmail(email) {
-    return (
-      this.#list.find((user) => user.email === email) ||
-      null
-    )
-  }
-}
+  files: [{ type: ObjectId, ref: 'File' }],
+})
 
 module.exports = {
   User,

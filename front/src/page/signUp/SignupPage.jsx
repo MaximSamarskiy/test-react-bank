@@ -1,5 +1,5 @@
+import "./index.scss";
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import ArrowImg from '../../image/svg/arrow-back.svg';
 import Danger from '../../image/svg/danger.svg';
@@ -13,12 +13,8 @@ function SignupPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setValue({ ...value, [e.target.name]: e.target.value });
-  };
-
-  const handleInputChange = (value) => {
-    console.log(`${value}`);
+  const handleInputChange = (newValue) => {
+    setValue(newValue);
   };
 
   const handleSubmit = async (e) => {
@@ -30,19 +26,25 @@ function SignupPage() {
   const handleSignUp = async () => {
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:4000/signup', {
-        email: value.username,
-        password: value.password,
+      const response = await fetch('http://localhost:4000/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: value.username,
+          password: value.password,
+        }),
       });
 
-      if (response.status === 200) {
-        const { token, user } = response.data;
-        console.log('Signup successful:', user);
-
-        dispatch({ type: 'LOGIN', payload: { token, user } });
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Signup successful:', data);
+        dispatch({ type: 'LOGIN', payload: data });
       } else {
-        console.error('Signup failed:', response.data.message);
-        setError(response.data.message);
+        const errorMessage = await response.text();
+        console.error('Signup failed:', errorMessage);
+        setError(errorMessage);
       }
     } catch (error) {
       console.error('Error during signup:', error.message);
@@ -84,15 +86,8 @@ function SignupPage() {
             {error && <span className="form_error">{error}</span>}
           </div>
 
-          <input
-            type="text"
-            name="username"
-            value={value.username || ''}
-            onChange={handleChange}
-          />
 
           <button
-            onClick={handleSignUp}
             type="submit"
             className={`button ${loading ? 'button-disabled' : ''}`}
             disabled={loading}
@@ -103,7 +98,7 @@ function SignupPage() {
           {error && (
             <span className="alert alert-disabled">
               <img src={Danger} alt="danger" />
-              A user with the same name already exists
+              {error}
             </span>
           )}
         </div>
