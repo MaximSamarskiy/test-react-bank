@@ -1,7 +1,7 @@
+import React, { useState } from 'react';
 import "./index.scss"
-import  { useState } from 'react';
 
-const FieldPassword = ({ name, label, placeholder, value, action }) => {
+const FieldPassword = ({ name, label, placeholder, value, onChange }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -9,10 +9,7 @@ const FieldPassword = ({ name, label, placeholder, value, action }) => {
   };
 
   const handleChange = (event) => {
-    const newValue = event.target.value;
-    action(newValue, () => {
-      console.log(newValue);
-    });
+    onChange(event.target.value);
   };
 
   return (
@@ -23,7 +20,7 @@ const FieldPassword = ({ name, label, placeholder, value, action }) => {
         <input
           onChange={handleChange}
           type={showPassword ? 'text' : 'password'} 
-          className="field_input" 
+          className="field_input validation" 
           name={name} 
           placeholder={placeholder} 
           value={value}  

@@ -1,6 +1,5 @@
 @use "../../style" as s;
-
-@use "../field/index.scss" as field;
+@use "../../style/form.scss" as form;
 
 .field-password {
   .field_wrapper {
@@ -12,8 +11,8 @@
       @include s.click;
 
       display: block;
-      height: 18px;
-      width: 18px;
+      height: 16px;
+      width: 16px;
 
       background-image: url("../../image/svg/eye-black-close.svg");
       background-size: cover;

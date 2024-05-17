@@ -1,65 +1,29 @@
 import "./index.scss";
-import React, { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
-import ArrowImg from '../../image/svg/arrow-back.svg';
+import React, { useState} from 'react';
+import { Link} from 'react-router-dom';
+
+import BackButton from "../../component/back_button/back_button";
 import Danger from '../../image/svg/danger.svg';
 import Field from '../../component/field/Field';
-import ParentComponent from '../../component/field-password/ParentComponent';
-import { AuthContext } from '../../context/AuthContext';
+import FieldPassword from "../../component/field-password/FieldPassword";
+import { useSignUp } from "../../hooks/useSignUp";
 
 function SignupPage() {
-  const { dispatch } = useContext(AuthContext);
-  const [value, setValue] = useState({});
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const {signup,error,isLoading} = useSignUp()
 
-  const handleInputChange = (newValue) => {
-    setValue(newValue);
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async(e) =>{
     e.preventDefault();
-    console.log(value);
-    handleSignUp();
-  };
-
-  const handleSignUp = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('http://localhost:4000/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: value.username,
-          password: value.password,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Signup successful:', data);
-        dispatch({ type: 'LOGIN', payload: data });
-      } else {
-        const errorMessage = await response.text();
-        console.error('Signup failed:', errorMessage);
-        setError(errorMessage);
-      }
-    } catch (error) {
-      console.error('Error during signup:', error.message);
-      setError('Error during signup');
-    } finally {
-      setLoading(false);
-    }
-  };
+   
+    await signup(email,password)
+    
+  }
 
   return (
     <div className="page page--signup">
       <header className="header">
-        <Link to="/" className="arrow--back">
-          <img src={ArrowImg} alt="arrow" />
-        </Link>
+        <header><BackButton/></header>
       </header>
 
       <form className="page_section" onSubmit={handleSubmit}>
@@ -69,38 +33,43 @@ function SignupPage() {
         <div className="form">
           <div className="form_item">
             <Field
-              name="username"
+              className="form_error"
               label="Email"
               type="text"
-              placeholder="Enter username"
-              action={handleInputChange}
+              placeholder="Enter email"
+              
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
             />
-            <div>
-              <ParentComponent />
-            </div>
+            <FieldPassword 
+              className="form_error"
+              label="Password"
+              type="password"
+              placeholder="Enter password"
+              onChange={setPassword}
+              value={password}
+            />
 
             <div className="wrapper_signup">
               <span>Already have an account? </span> <Link to="/signin">Sign In</Link>
             </div>
-
-            {error && <span className="form_error">{error}</span>}
           </div>
-
 
           <button
             type="submit"
-            className={`button ${loading ? 'button-disabled' : ''}`}
-            disabled={loading}
+            className={`button ${isLoading ? 'button-disabled' : ''}`} 
+            disabled={isLoading}
           >
-            {loading ? 'Signing Up...' : 'Continue'}
+            {isLoading ? 'Signing Up...' : 'Continue'}
           </button>
-
-          {error && (
-            <span className="alert alert-disabled">
-              <img src={Danger} alt="danger" />
-              {error}
-            </span>
-          )}
+       
+          {error && 
+            <div className="alert alert--disabled">
+              <span className="form_error">{error}</span>
+              <img src={Danger} alt="danger"/>
+              <span className="danger_span"> A user with this email address already exists</span>
+            </div>
+          }
         </div>
       </form>
     </div>

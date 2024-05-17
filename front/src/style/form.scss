@@ -1,5 +1,4 @@
-@use "./index.scss";
-@use "./click.scss" as s;
+@use "./index.scss" as s;
 
 .form {
   display: flex;
@@ -49,25 +48,22 @@
   }
 }
 
-.alert {
-  display: flex;
-  justify-content: center;
+.validation {
+  &--active {
+    border-color: red !important;
+  }
+}
 
-  gap: 10px;
+.alert {
   border: 1px solid transparent;
   border-radius: 10px;
-  padding: 16px 12px;
-  font-size: 14px;
+  padding: 15px;
 
-  margin-right: 20px;
-  margin-left: 20px;
+  text-align: center;
 
-  &-danger {
-    background-color: rgb(243, 224, 162);
-    color: orange;
-  }
+  background-color: rgb(250, 211, 197);
 
-  &-disabled {
-    display: none;
+  & .danger_span {
+    color: orangered;
   }
 }

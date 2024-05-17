@@ -1,39 +1,35 @@
-#!/usr/bin/env node
-
-/**
- * Module dependencies.
- */
 const express = require('express')
 const mongoose = require('mongoose')
-const auth = require('./src/route/auth')
+const userRoutes = require('./src/route/auth')
 const cors = require('cors')
-const app = express()
+const http = require('http')
 const debug = require('debug')(
   'template-express-live-reload:server',
 )
 
+const app = express()
+const PORT = 5000
+
+// Middleware
 app.use(cors())
-
-const http = require('http')
-
 app.use(express.json())
-app.use('/', auth)
 
-/**
- * Get port from environment and store in Express.
- */
-const port = normalizePort(process.env.PORT || '4000')
-app.set('port', port)
+// Routes
+app.use('/auth', userRoutes)
 
-/**
- * Create HTTP server.
- */
+// Connect to MongoDB
+mongoose
+  .connect('mongodb://localhost:27017/mydatabase', {})
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) =>
+    console.error('Error connecting to MongoDB:', err),
+  )
+
+// Create HTTP server
 const server = http.createServer(app)
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-server.listen(port)
+// Listen on provided port
+server.listen(PORT)
 server.on('error', onError)
 server.on('listening', onListening)
 
@@ -65,9 +61,9 @@ function onError(error) {
   }
 
   const bind =
-    typeof port === 'string'
-      ? 'Pipe ' + port
-      : 'Port ' + port
+    typeof PORT === 'string'
+      ? 'Pipe ' + PORT
+      : 'Port ' + PORT
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -94,7 +90,5 @@ function onListening() {
       ? 'pipe ' + addr
       : 'port ' + addr.port
   debug('Listening on ' + bind)
-  console.log(
-    'Listening on ' + 'http://localhost:' + addr.port,
-  )
+  console.log('Listening on http://localhost:' + addr.port)
 }

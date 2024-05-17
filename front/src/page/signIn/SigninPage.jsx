@@ -1,37 +1,77 @@
-import "./index.scss"
-import ArrowImg from "../../image/svg/arrow-back.svg";
-import { Link } from "react-router-dom";
+import BackButton from "../../component/back_button/back_button";
+import FieldPassword from "../../component/field-password/FieldPassword";
+import Field from "../../component/field/Field";
+import "./index.scss";
+import React, { useState } from 'react';
 
 
 
 
-function SigninPage(){
- return (
-    <div className="page page--signin">
-        <header className="header">
-            <Link to="/" className="arrow--back">
-                <img src={ArrowImg} alt="arrow" />
-            </Link>
-        </header>
+function SigninPage() {
 
+  const validate = (name,value) => {
+    return true
+  }
+  const submit=()=>{
+    console.log(this.value)
+  }
+
+  const change =(name,value) =>{
+    console.log(this.value)
+    if(this.validate(name,value)) this.value[name] = value
+  }
+
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+
+  return (
+   
+      
+      <div className="page">
+        <header><BackButton/></header>
+        
         <form className="page_section">
-           <h1 className="page_title">Sign In</h1>
-           <h3 className="page_description">Choose a registration method</h3>
+          <h1 className="page_title">Sign In</h1>
+           <div className="page_description">Select login method</div>
+          <div className="form">
+            <div className="form_item">
+            <Field
+              className="form_error"
+              name="email"
+              label="Email"
+              type="text"
+              placeholder="Enter email"
+              value={formData.email}
+              onChange={handleInputChange}
+            />
+              <FieldPassword 
+              className="form_error"
+              name="password"
+              label="Password"
+              placeholder="Enter password"
+              value={formData.password}
+              onChange={(newPassword) => setFormData({ ...formData, password: newPassword })}
+            />
 
-
-            <div className="form">
-                <div className="form_item">
-                    Test
-                    <span name="email" className="form_error">Error</span>
-                </div>
-
-                <button className="button" type="button">Continue</button>
-                
+              <span className="form_error">Помилка</span>
             </div>
+          </div>
 
+          <button className="button button-disabled " type="sybmit">Continue</button>
+
+         
         </form>
-       
-    </div>
- )
+      </div>
+    
+  );
 }
-export default SigninPage
+
+export default SigninPage;

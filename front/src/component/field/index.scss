@@ -1,4 +1,5 @@
-@use "../../style";
+@use "../../style" as s;
+@use "../../style/form.scss" as form;
 
 .field {
   display: flex;
@@ -7,6 +8,7 @@
 
   &_label {
     font-size: 14px;
+    color: gray;
   }
 
   &_input {
@@ -32,8 +34,7 @@
     &:focus {
       border-color: grey;
     }
-
-    &-error {
+    &--error {
       border-color: red !important;
     }
   }
