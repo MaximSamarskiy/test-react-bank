@@ -1,0 +1,34 @@
+.page {
+  .header {
+    .header-content {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .transaction-details {
+    padding: 20px;
+    .transaction-amount {
+      font-size: 2em;
+      &.positive {
+        color: green;
+      }
+      &.negative {
+        color: red;
+      }
+    }
+    .transaction-info {
+      margin-top: 20px;
+      .transaction-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        span {
+          &:first-child {
+            font-weight: bold;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,11 +1,13 @@
+// server.js
 const express = require('express')
 const mongoose = require('mongoose')
-const userRoutes = require('./src/route/auth')
 const cors = require('cors')
 const http = require('http')
 const debug = require('debug')(
   'template-express-live-reload:server',
 )
+const authRoutes = require('./src/route/auth')
+const requireAuth = require('./middleware/requireAuth')
 
 const app = express()
 const PORT = 5000
@@ -15,7 +17,7 @@ app.use(cors())
 app.use(express.json())
 
 // Routes
-app.use('/auth', userRoutes)
+app.use('/auth', authRoutes)
 
 // Connect to MongoDB
 mongoose
@@ -38,17 +40,8 @@ server.on('listening', onListening)
  */
 function normalizePort(val) {
   const port = parseInt(val, 10)
-
-  if (isNaN(port)) {
-    // named pipe
-    return val
-  }
-
-  if (port >= 0) {
-    // port number
-    return port
-  }
-
+  if (isNaN(port)) return val // named pipe
+  if (port >= 0) return port // port number
   return false
 }
 
@@ -56,9 +49,7 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error
-  }
+  if (error.syscall !== 'listen') throw error
 
   const bind =
     typeof PORT === 'string'

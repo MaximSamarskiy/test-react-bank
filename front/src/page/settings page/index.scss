@@ -1,0 +1,82 @@
+.page-settings {
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  .header {
+    .header-content {
+      display: flex;
+      align-items: center;
+
+      .page_title {
+        flex-grow: 1;
+        text-align: center;
+      }
+    }
+  }
+
+  .page_section {
+    margin-top: 20px;
+
+    .form {
+      .form_item {
+        margin-bottom: 30px;
+
+        .field {
+          margin-bottom: 15px;
+
+          label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+          }
+
+          input {
+            width: calc(100% - 30px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          }
+        }
+      }
+    }
+
+    .message {
+      margin-top: 20px;
+      text-align: center;
+      font-weight: bold;
+      color: #ff4d4d;
+    }
+  }
+}
+
+.button_save {
+  border: 1px solid #6a5acd;
+  border-radius: 10px;
+  background: #fff;
+  color: #6a5acd;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:hover {
+    background: #6a5acd;
+    color: #fff;
+  }
+}
+
+.logout-button {
+  border: 1px solid #ff4d4d;
+  border-radius: 10px;
+  background: #fff;
+  color: #ff4d4d;
+  font-weight: bold;
+  cursor: pointer;
+
+  &:hover {
+    background: #ff4d4d;
+    color: #fff;
+  }
+}

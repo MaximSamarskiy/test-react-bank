@@ -5,3 +5,9 @@
 .back-button {
   @include s.click;
 }
+.button {
+  margin-top: 20px;
+}
+.error {
+  padding-top: 20px;
+}

@@ -36,7 +36,7 @@
     opacity: 0.3;
   }
 
-  &-disabled {
+  &--disabled {
     opacity: 0.5;
     cursor: default;
 
@@ -48,12 +48,6 @@
   }
 }
 
-.validation {
-  &--active {
-    border-color: red !important;
-  }
-}
-
 .alert {
   border: 1px solid transparent;
   border-radius: 10px;
@@ -62,6 +56,11 @@
   text-align: center;
 
   background-color: rgb(250, 211, 197);
+
+  &-success {
+    border-color: green;
+    color: green;
+  }
 
   & .danger_span {
     color: orangered;

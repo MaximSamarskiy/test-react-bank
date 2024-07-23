@@ -2,17 +2,23 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const validator = require('validator')
 
-const Schema = mongoose.Schema
-
-const userSchema = new Schema({
+const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
     unique: true,
+    validate: [
+      validator.isEmail,
+      'невірна адреса електронної пошти',
+    ],
   },
   password: {
     type: String,
     required: true,
+  },
+  balance: {
+    type: Number,
+    default: 0,
   },
 })
 
@@ -21,20 +27,23 @@ userSchema.statics.signup = async function (
   password,
 ) {
   if (!email || !password) {
-    throw Error('Усі поля повинні бути заповненні')
+    throw new Error('Усі поля мають бути заповнені')
   }
+
   if (!validator.isEmail(email)) {
-    throw Error('такий email вже зареестрований')
+    throw new Error('Електронна адреса недійсна')
   }
+
   if (!validator.isStrongPassword(password)) {
-    throw Error('слабкий пароль')
+    throw new Error('Пароль недостатньо надійний')
   }
 
   const exists = await this.findOne({ email })
 
   if (exists) {
-    throw Error('Користувач с таким email вже існує')
+    throw new Error('E-mail вже використовується')
   }
+
   const salt = await bcrypt.genSalt(10)
   const hash = await bcrypt.hash(password, salt)
 
@@ -48,13 +57,12 @@ userSchema.statics.signin = async function (
   password,
 ) {
   if (!email || !password) {
-    throw Error('Усі поля повинні бути заповненні')
+    throw new Error('Усі поля мають бути заповнені')
   }
 
   const user = await this.findOne({ email })
-
   if (!user) {
-    throw Error('Невірний email')
+    throw new Error('Невірна електронна адреса')
   }
 
   const match = await bcrypt.compare(
@@ -62,10 +70,17 @@ userSchema.statics.signin = async function (
     user.password,
   )
   if (!match) {
-    throw Error('Невірний пароль')
+    throw new Error('Невірний пароль')
   }
 
   return user
 }
 
-module.exports = mongoose.model('User', userSchema)
+userSchema.statics.getByEmail = async function (email) {
+  return this.findOne({ email })
+}
+
+const User =
+  mongoose.models.User || mongoose.model('User', userSchema)
+
+module.exports = User

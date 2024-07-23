@@ -1,4 +1,4 @@
-@use "../../style" as s;
+@use "../../style" as *;
 @use "../../style/form.scss" as form;
 
 .field {
@@ -12,9 +12,8 @@
   }
 
   &_input {
-    border: 1px solid (rgb(231, 226, 226));
+    border: 1px solid rgb(231, 226, 226);
     background-color: white;
-
     padding: 16px;
     border-radius: 10px;
     font-size: 14px;
@@ -24,7 +23,6 @@
     }
 
     color: black;
-
     transition: border-color 0.3s;
 
     &:hover {
@@ -34,8 +32,14 @@
     &:focus {
       border-color: grey;
     }
-    &--error {
-      border-color: red !important;
-    }
+  }
+
+  .validation--active {
+    border-color: red !important;
+  }
+
+  .form__error {
+    color: red;
+    font-size: 12px;
   }
 }

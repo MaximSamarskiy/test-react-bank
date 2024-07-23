@@ -7,18 +7,19 @@
     display: grid;
     position: relative;
 
-    & .field_icon {
+    .field_icon {
       @include s.click;
-
       display: block;
       height: 16px;
       width: 16px;
-
       background-image: url("../../image/svg/eye-black-close.svg");
       background-size: cover;
 
       &.show {
         background-image: url("../../image/svg/eye-black-open.svg");
+      }
+      &.show {
+        color: #775ce5;
       }
 
       position: absolute;
