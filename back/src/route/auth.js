@@ -38,31 +38,28 @@ router.get(
 
 router.post('/refresh-token', (req, res) => {
   const { refreshToken } = req.body
-
-  if (!refreshToken) {
+  if (!refreshToken)
     return res
-      .status(400)
-      .json({ error: 'Refresh token is required' })
+      .status(401)
+      .json({ error: 'Token оновлення не надано' })
+
+  try {
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET,
+    )
+    const newToken = jwt.sign(
+      { id: decoded.id, email: decoded.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '15m' },
+    )
+
+    res.json({ accessToken: newToken })
+  } catch (error) {
+    res
+      .status(401)
+      .json({ error: 'Недійсний маркер оновлення' })
   }
-
-  jwt.verify(
-    refreshToken,
-    process.env.JWT_REFRESH_SECRET,
-    (err, user) => {
-      if (err) {
-        return res
-          .status(403)
-          .json({ error: 'Invalid refresh token' })
-      }
-
-      const accessToken = jwt.sign(
-        { _id: user._id },
-        process.env.JWT_SECRET,
-        { expiresIn: '15m' },
-      )
-      res.json({ accessToken })
-    },
-  )
 })
 
 module.exports = router

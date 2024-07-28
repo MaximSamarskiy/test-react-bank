@@ -18,13 +18,11 @@ export const useSignUp = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-
       const json = await response.json();
-      console.log("Signup response:", json);
 
       if (!response.ok) {
         setIsLoading(false);
-        setError(json.error || "Unknown error");
+        setError(json.error);
         return null;
       }
       if (response.ok) {
@@ -35,7 +33,7 @@ export const useSignUp = () => {
       }
     } catch (error) {
       setIsLoading(false);
-      setError("Ошибка при регистрации");
+      setError("Під час реєстрації сталася помилка");
       console.error("Signup Error:", error);
       return null;
     }

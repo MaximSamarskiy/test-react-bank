@@ -25,10 +25,10 @@ const ReceivePage = () => {
         localStorage.setItem('token', data.accessToken);
         return data.accessToken;
       } else {
-        setError('Не удалось обновить токен');
+        setError('Не вдалося оновити token');
       }
     } catch (error) {
-      setError('Не удалось обновить токен');
+      setError('Не вдалося оновити token');
     }
     return null;
   };
@@ -37,7 +37,7 @@ const ReceivePage = () => {
     let token = localStorage.getItem('token');
   
     if (!token) {
-      setError('Токен не найден, войдите в систему');
+      setError('Token не знайдено, увійдіть');
       return;
     }
   
@@ -68,14 +68,14 @@ const ReceivePage = () => {
       const data = await response.json();
   
       if (response.ok) {
-        setSuccess('Транзакция успешно создана');
+        setSuccess('Трансакцію створено успішно');
         setAmount('');
         setPaymentMethod('');
       } else {
         setError(data.error);
       }
     } catch (error) {
-      setError('Ошибка обработки транзакции');
+      setError('Помилка обробки транзакції');
     }
   };
   

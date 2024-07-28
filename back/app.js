@@ -8,9 +8,6 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const http = require('http')
 const jwt = require('jsonwebtoken')
-const debug = require('debug')(
-  'template-express-live-reload:server',
-)
 const livereload = require('livereload')
 const connectLiveReload = require('connect-livereload')
 
@@ -56,23 +53,22 @@ app.use('/auth', authRoutes)
 app.use('/', mainRoutes)
 
 mongoose
-  .connect(
-    process.env.MONGO_URI ||
-      'mongodb://localhost:27017/mydatabase',
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    },
-  )
-  .then(() => console.log('Connected to MongoDB'))
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('Connected to MongoDB Atlas'))
   .catch((err) =>
-    console.error('Error connecting to MongoDB:', err),
+    console.error(
+      'Error connecting to MongoDB Atlas:',
+      err,
+    ),
   )
 
 app.post('/auth/signin', async (req, res) => {
   const { email, password } = req.body
 
-  // Пример простой проверки пользователя
+  // Example user verification
   if (
     email === 'user@example.com' &&
     password === 'password123'
@@ -88,11 +84,7 @@ app.post('/auth/signin', async (req, res) => {
       { expiresIn: '7d' },
     )
 
-    res.json({
-      token,
-      refreshToken,
-      user,
-    })
+    res.json({ token, refreshToken, user })
   } else {
     res
       .status(401)
