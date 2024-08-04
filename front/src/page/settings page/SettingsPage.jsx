@@ -32,7 +32,7 @@ const SettingsPage = () => {
       return;
     }
     try {
-      const res = await fetch('http://localhost:5000/auth/setting', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/setting`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ const SettingsPage = () => {
       if (res.ok) {
         setMessage('Пароль успішно оновлено');
       } else {
-        setMessage(data.error);
+        setMessage(data.error || 'Помилка оновлення пароля');
       }
     } catch (error) {
       console.error('Error updating password:', error);
@@ -64,7 +64,7 @@ const SettingsPage = () => {
       return;
     }
     try {
-      const res = await fetch('http://localhost:5000/auth/setting', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/setting`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ const SettingsPage = () => {
         dispatch({ type: 'UPDATE_EMAIL', payload: email });
         setMessage('Електронну пошту успішно оновлено');
       } else {
-        setMessage(data.error);
+        setMessage(data.error || 'Помилка оновлення електронної пошти');
       }
     } catch (error) {
       console.error('Error updating email:', error);
@@ -92,7 +92,7 @@ const SettingsPage = () => {
       return;
     }
     try {
-      const res = await fetch('http://localhost:5000/auth/setting', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/setting`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ const SettingsPage = () => {
         setMessage('Успішно вийшов');
       } else {
         const data = await res.json();
-        setMessage(data.error);
+        setMessage(data.error || 'Помилка виходу');
       }
     } catch (error) {
       console.error('Error logging out:', error);

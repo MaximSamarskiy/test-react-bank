@@ -8,26 +8,7 @@ const updatePassword = async (req, res) => {
 
   try {
     const user = await User.findById(userId)
-    if (
-      !user ||
-      !bcrypt.compareSync(oldPassword, user.password)
-    ) {
-      return res
-        .status(400)
-        .json({ error: 'Incorrect old password' })
-    }
-
-    const passwordError = validatePassword(newPassword)
-    if (passwordError) {
-      return res.status(400).json({ error: passwordError })
-    }
-
-    user.password = bcrypt.hashSync(newPassword, 10)
-    await user.save()
-
-    res
-      .status(200)
-      .json({ message: 'Password updated successfully' })
+    // ...
   } catch (error) {
     console.error('Error updating password:', error)
     res.status(500).json({ error: 'Server error' })

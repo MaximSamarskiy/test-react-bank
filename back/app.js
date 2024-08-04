@@ -67,24 +67,21 @@ mongoose
 
 app.post('/auth/signin', async (req, res) => {
   const { email, password } = req.body
-
   // Example user verification
   if (
     email === 'user@example.com' &&
     password === 'password123'
   ) {
-    const user = { id: 1, email }
-
-    const token = jwt.sign(user, process.env.JWT_SECRET, {
-      expiresIn: '15m',
-    })
-    const refreshToken = jwt.sign(
-      user,
-      process.env.JWT_REFRESH_SECRET,
-      { expiresIn: '7d' },
-    )
-
-    res.json({ token, refreshToken, user })
+    // const user = { id: 1, email }
+    // const token = jwt.sign(user, process.env.JWT_SECRET, {
+    //   expiresIn: '15m',
+    // })
+    // const refreshToken = jwt.sign(
+    //   user,
+    //   process.env.JWT_REFRESH_SECRET,
+    //   { expiresIn: '7d' },
+    // )
+    // res.json({ token, refreshToken, user })
   } else {
     res
       .status(401)
@@ -92,30 +89,57 @@ app.post('/auth/signin', async (req, res) => {
   }
 })
 
-app.post('/auth/refresh-token', (req, res) => {
-  const { refreshToken } = req.body
-  if (!refreshToken) {
-    return res
-      .status(401)
-      .json({ error: 'No refresh token provided' })
-  }
-
+app.post('/auth/updateEmail', async (req, res) => {
+  const { email, oldPassword } = req.body
+  const { userId } = req.user
+  const token = req.headers.authorization
   try {
-    const decoded = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET,
-    )
-    const newToken = jwt.sign(
-      { id: decoded.id, email: decoded.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '15m' },
-    )
+    const user = await User.findById(userId)
+    if (
+      !user ||
+      !bcrypt.compareSync(oldPassword, user.password)
+    ) {
+      return res
+        .status(400)
+        .json({ error: 'Incorrect old password' })
+    }
 
-    res.json({ accessToken: newToken })
+    user.email = email
+    await user.save()
+
+    res
+      .status(200)
+      .json({ message: 'Email updated successfully' })
   } catch (error) {
-    res.status(401).json({ error: 'Invalid refresh token' })
+    console.error('Error updating email:', error)
+    res.status(500).json({ error: 'Server error' })
   }
 })
+
+// app.post('/auth/refresh-token', (req, res) => {
+//   const { refreshToken } = req.body
+//   if (!refreshToken) {
+//     return res
+//       .status(401)
+//       .json({ error: 'No refresh token provided' })
+//   }
+
+//   try {
+//     const decoded = jwt.verify(
+//       refreshToken,
+//       process.env.JWT_REFRESH_SECRET,
+//     )
+//     const newToken = jwt.sign(
+//       { id: decoded.id, email: decoded.email },
+//       process.env.JWT_SECRET,
+//       { expiresIn: '15m' },
+//     )
+
+//     res.json({ accessToken: newToken })
+//   } catch (error) {
+//     res.status(401).json({ error: 'Invalid refresh token' })
+//   }
+// })
 
 app.use((req, res, next) => {
   next(createError(404))

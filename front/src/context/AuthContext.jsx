@@ -1,5 +1,9 @@
-import React, { createContext, useReducer, useEffect } from 'react';
-import { getTokenSession, loadSession, saveSession } from '../hooks/saveSession';
+import React, { createContext, useReducer, useEffect } from "react";
+import {
+  getTokenSession,
+  loadSession,
+  saveSession,
+} from "../hooks/saveSession";
 
 const initialState = {
   user: null,
@@ -11,7 +15,7 @@ const AuthContext = createContext(initialState);
 
 const authReducer = (state, action) => {
   switch (action.type) {
-    case 'LOGIN':
+    case "LOGIN":
       return {
         ...state,
         user: action.payload.user,
@@ -19,13 +23,13 @@ const authReducer = (state, action) => {
         notifications: [
           ...state.notifications,
           {
-            message: 'User logged in',
+            message: "User logged in",
             timestamp: new Date(),
-            type: 'Frame540',
+            type: "Frame540",
           },
         ],
       };
-    case 'LOGOUT':
+    case "LOGOUT":
       return {
         ...state,
         user: null,
@@ -33,13 +37,13 @@ const authReducer = (state, action) => {
         notifications: [
           ...state.notifications,
           {
-            message: 'User logged out',
+            message: "User logged out",
             timestamp: new Date(),
-            type: 'Announcement',
+            type: "Announcement",
           },
         ],
       };
-    case 'UPDATE_EMAIL':
+    case "UPDATE_EMAIL":
       return {
         ...state,
         user: {
@@ -47,7 +51,7 @@ const authReducer = (state, action) => {
           email: action.payload,
         },
       };
-    case 'ADD_NOTIFICATION':
+    case "ADD_NOTIFICATION":
       return {
         ...state,
         notifications: [
@@ -59,7 +63,7 @@ const authReducer = (state, action) => {
           },
         ],
       };
-    case 'REFRESH_TOKEN': 
+    case "REFRESH_TOKEN":
       return {
         ...state,
         token: action.payload.token,
@@ -75,7 +79,10 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const session = loadSession();
     if (session) {
-      dispatch({ type: 'LOGIN', payload: { user: session.user, token: session.token } });
+      dispatch({
+        type: "LOGIN",
+        payload: { user: session.user, token: session.token },
+      });
     }
   }, []);
 
@@ -83,33 +90,33 @@ const AuthProvider = ({ children }) => {
     saveSession(state);
   }, [state]);
 
-  const refreshToken = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/auth/refresh-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refreshToken: localStorage.getItem('refreshToken') }),
-      });
+  // const refreshToken = async () => {
+  //   try {
+  //     const response = await fetch('http://localhost:5000/auth/refresh-token', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ refreshToken: localStorage.getItem('refreshToken') }),
+  //     });
 
-      const data = await response.json();
-      if (response.ok) {
-        localStorage.setItem('token', data.accessToken);
-        dispatch({ type: 'REFRESH_TOKEN', payload: { token: data.accessToken } });
-        saveSession(state);
-        return data.accessToken;
-      } else {
-        console.error('Failed to refresh token:', data.error);
-      }
-    } catch (error) {
-      console.error('Failed to refresh token:', error);
-    }
-    return null;
-  };
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       localStorage.setItem('token', data.accessToken);
+  //       dispatch({ type: 'REFRESH_TOKEN', payload: { token: data.accessToken } });
+  //       saveSession(state);
+  //       return data.accessToken;
+  //     } else {
+  //       console.error('Failed to refresh token:', data.error);
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to refresh token:', error);
+  //   }
+  //   return null;
+  // };
 
   return (
-    <AuthContext.Provider value={{ state, dispatch, refreshToken }}>
+    <AuthContext.Provider value={{ state, dispatch }}>
       {children}
     </AuthContext.Provider>
   );

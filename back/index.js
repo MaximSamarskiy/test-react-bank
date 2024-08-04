@@ -1,4 +1,3 @@
-// server.js
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
@@ -21,7 +20,7 @@ app.use('/auth', authRoutes)
 
 // Connect to MongoDB
 mongoose
-  .connect('mongodb://localhost:27017/mydatabase', {})
+  .connect(process.env.MONGO_URI, {})
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) =>
     console.error('Error connecting to MongoDB:', err),

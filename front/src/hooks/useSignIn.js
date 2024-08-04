@@ -21,6 +21,7 @@ export const useSignIn = () => {
 
       const json = await response.json();
 
+      localStorage.setItem("token", JSON.stringify(json.token));
       if (!response.ok) {
         setIsLoading(false);
         setError(json.error || "Failed to sign in");

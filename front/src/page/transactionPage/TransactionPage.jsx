@@ -19,7 +19,7 @@ const TransactionPage = () => {
           setError(data.error);
         }
       } catch (error) {
-        setError('Error fetching transaction details');
+        setError('Помилка отримання деталей трансакції');
       }
     };
 

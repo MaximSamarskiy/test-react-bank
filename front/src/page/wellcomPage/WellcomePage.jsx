@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
  function WellcomePage () { return (
     <div className="page page--background">
+      
         <div className="wellcome_section">
        
         <h1 className="page_title_wellcom">Hello!</h1>

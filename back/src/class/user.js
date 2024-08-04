@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const Confirm = require('./confirm')
 const bcrypt = require('bcrypt')
-const validator = require('validator')
 const Transaction = require('../models/transaction')
 const Notification = require('../models/notification')
 const requireAuth = require('../../middleware/requireAuth')
@@ -14,18 +13,10 @@ const {
   logoutUser,
 } = require('../class/update-user')
 
-const createToken = (userId, expiresIn = '15m') => {
+const createToken = (userId, expiresIn = '1h') => {
   return jwt.sign({ _id: userId }, process.env.JWT_SECRET, {
     expiresIn,
   })
-}
-
-const createRefreshToken = (userId) => {
-  return jwt.sign(
-    { _id: userId },
-    process.env.JWT_REFRESH_SECRET,
-    { expiresIn: '7d' },
-  )
 }
 
 const signinUser = async (req, res) => {
@@ -34,11 +25,37 @@ const signinUser = async (req, res) => {
   try {
     const user = await User.signin(email, password)
     const token = createToken(user._id)
-    const refreshToken = createRefreshToken(user._id)
-
-    res.status(200).json({ email, token, refreshToken })
+    // const refreshToken = createRefreshToken(user._id)
+    res.status(200).json({ email, token })
   } catch (error) {
     res.status(400).json({ error: error.message })
+  }
+}
+
+const updateEmail1 = async (req, res) => {
+  const { email, oldPassword } = req.body
+  const { userId } = req.user
+
+  try {
+    const user = await User.findById(userId)
+    if (
+      !user ||
+      !bcrypt.compareSync(oldPassword, user.password)
+    ) {
+      return res
+        .status(400)
+        .json({ error: 'Incorrect old password' })
+    }
+
+    user.email = email
+    await user.save()
+
+    res
+      .status(200)
+      .json({ message: 'Email updated successfully' })
+  } catch (error) {
+    console.error('Error updating email:', error)
+    res.status(500).json({ error: 'Server error' })
   }
 }
 
@@ -49,11 +66,9 @@ const signupUser = async (req, res) => {
     const user = await User.signup(email, password)
     Confirm.create(email)
     const token = createToken(user._id)
-    const refreshToken = createRefreshToken(user._id)
+    // const refreshToken = createRefreshToken(user._id)
 
-    res
-      .status(200)
-      .json({ email: user.email, token, refreshToken })
+    res.status(200).json({ email: user.email, token })
   } catch (error) {
     res.status(400).json({ error: error.message })
   }
@@ -430,4 +445,5 @@ module.exports = {
   Send,
   getTransaction,
   receiveFunds,
+  updateEmail1,
 }

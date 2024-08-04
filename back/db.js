@@ -1,19 +1,18 @@
 const { MongoClient } = require('mongodb')
 const { connect } = require('mongoose')
 
-const URL = 'mongodb://localhost:27017/movibox'
-
 let dbConnection
 
 module.exports = {
   connectToDb: (cb) => {
-    MongoClient.connect(URL)
+    MongoClient.connect(process.env.MONGO_URI)
       .then((client) => {
         console.log('Connected to MongoDB')
         dbConnection = client.db()
         return cb()
       })
       .catch((err) => {
+        console.log('disconect to MongoDB')
         return cb(err)
       })
   },

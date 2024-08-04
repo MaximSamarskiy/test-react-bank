@@ -15,9 +15,9 @@ const {
   Send,
   getTransaction,
   receiveFunds,
+  updateEmail1,
 } = require('../class/user')
 const requireAuth = require('../../middleware/requireAuth')
-
 router.get('/balance', requireAuth, getUserBalance)
 router.post('/signin', signinUser)
 router.post('/signup', signupUser)
@@ -34,32 +34,7 @@ router.get(
   '/transaction/:transactionId',
   requireAuth,
   getTransaction,
-)
-
-router.post('/refresh-token', (req, res) => {
-  const { refreshToken } = req.body
-  if (!refreshToken)
-    return res
-      .status(401)
-      .json({ error: 'Token оновлення не надано' })
-
-  try {
-    const decoded = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET,
-    )
-    const newToken = jwt.sign(
-      { id: decoded.id, email: decoded.email },
-      process.env.JWT_SECRET,
-      { expiresIn: '15m' },
-    )
-
-    res.json({ accessToken: newToken })
-  } catch (error) {
-    res
-      .status(401)
-      .json({ error: 'Недійсний маркер оновлення' })
-  }
-})
+),
+  router.post('/updateEmail', requireAuth, updateEmail1)
 
 module.exports = router

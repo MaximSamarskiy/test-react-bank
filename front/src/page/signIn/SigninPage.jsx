@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; 
+import React, { useState, useEffect, useCallback } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import BackButton from "../../component/back_button/back_button";
 import Field from "../../component/field/Field";
 import FieldPassword from "../../component/field-password/FieldPassword";
@@ -7,16 +7,16 @@ import { useSignIn } from "../../hooks/useSignIn";
 import "./index.scss";
 
 function SigninPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
   const { signin, error, isLoading } = useSignIn();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const checkDisabled = useCallback(() => {
     let disabled = false;
 
-    Object.values(fieldErrors).forEach(error => {
+    Object.values(fieldErrors).forEach((error) => {
       if (error) {
         disabled = true;
       }
@@ -26,10 +26,10 @@ function SigninPage() {
       disabled = true;
     }
 
-    const el = document.querySelector('.button');
+    const el = document.querySelector(".button");
 
     if (el) {
-      el.classList.toggle('button--disabled', Boolean(disabled));
+      el.classList.toggle("button--disabled", Boolean(disabled));
     }
   }, [email, password, fieldErrors]);
 
@@ -39,14 +39,14 @@ function SigninPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await signin(email, password);
-    navigate('/balance'); 
+    await signin(email, password).then(() => navigate("/balance"));
   };
 
   return (
     <div className="page">
-      <header><BackButton/></header>
-      
+      <header>
+        <BackButton />
+      </header>
       <form className="page_section" onSubmit={handleSubmit}>
         <h1 className="page_title">Sign In</h1>
         <div className="page_description">Select login method</div>
@@ -60,7 +60,7 @@ function SigninPage() {
               value={email}
               setFieldErrors={setFieldErrors}
             />
-            <FieldPassword 
+            <FieldPassword
               label="Password"
               placeholder="Enter password"
               onChange={setPassword}
@@ -69,15 +69,16 @@ function SigninPage() {
             />
             {error && <div className="error">{error}</div>}
           </div>
-          
+
           <div className="wrapper_signup">
-            <span>Forgot your password? </span> <Link to="/recovery">Restore</Link>
+            <span>Forgot your password? </span>{" "}
+            <Link to="/recovery">Restore</Link>
           </div>
         </div>
 
-        <button 
-          className={`button ${isLoading ? 'button--disabled' : ''}`} 
-          disabled={isLoading} 
+        <button
+          className={`button ${isLoading ? "button--disabled" : ""}`}
+          disabled={isLoading}
           type="submit"
         >
           Continue

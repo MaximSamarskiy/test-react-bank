@@ -16,16 +16,22 @@ const requireAuth = (req, res, next) => {
       .json({ error: 'Token is required' })
   }
 
-  try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET,
-    )
-    req.user = decoded
-    next()
-  } catch (err) {
-    return res.status(401).json({ error: 'Invalid token' })
-  }
+  jwt.verify(
+    token,
+    process.env.JWT_SECRET,
+    (err, decoded) => {
+      if (err) {
+        console.error('JWT verification failed:', err)
+        return res
+          .status(401)
+          .json({ error: 'Invalid token' })
+      } else {
+        console.log('JWT verified successfully:', decoded)
+        req.user = decoded
+        next()
+      }
+    },
+  )
 }
 
 module.exports = requireAuth
